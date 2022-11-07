@@ -1,0 +1,2 @@
+# allegro-gpu-rendering
+GPU上でライフゲームのシミュレーションとallegroのレンダリングをやる
