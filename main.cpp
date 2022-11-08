@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
                     break;
                 }
                 ifs >> p;
-                map[gx + i + (gy + j) * width] = p - 48;
+                map[gx + j + (gy + i) * width] = p - 48;
             }
         }
     }
