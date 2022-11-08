@@ -3,10 +3,11 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <stdlib.h>
 
-int main() {
+int main(int argc, char **argv) {
     int width = 1024;
     int height = 1024;
     if (!al_init()) {
@@ -51,7 +52,6 @@ int main() {
     al_register_event_source(queue, al_get_display_event_source(disp));
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
-    std::cout << "first end" << std::endl;
     int time = 0;
     int frame_counter = 0;
 
@@ -59,10 +59,32 @@ int main() {
     int *map = (int *)malloc(sizeof(int) * width * height);
     for (int i = 0; i < width * height; i++) {
         map[i] = 0;
-        if (i % width == 0 && i < width * 128) {
-            map[i] = 1;
+    }
+    //初期状態の読み込み
+    if (argc == 2) {
+        std::cout << "Read Initial state from " << argv[1] << std::endl;
+        std::ifstream ifs(argv[1]);
+        if (!ifs) {
+            std::cerr << "File reading Error" << std::endl;
+            exit(1);
+        }
+        int w, h;
+        ifs >> w >> h;
+        int gx = (width - w) / 2;
+        int gy = (height - h) / 2;
+        char p;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (ifs.eof()) {
+                    i = h;
+                    break;
+                }
+                ifs >> p;
+                map[gx + i + (gy + j) * width] = p - 48;
+            }
         }
     }
+
     {
         auto lock = al_lock_bitmap(m, ALLEGRO_PIXEL_FORMAT_RGBA_8888,
                                    ALLEGRO_LOCK_READWRITE);
