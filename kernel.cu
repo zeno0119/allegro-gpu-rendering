@@ -5,14 +5,15 @@ __global__ void step(int *src, int *dst, int width, int height){
     //TODO: 共有メモリに256 * interval分コピー
     const int idx = threadIdx.x + blockDim.x * blockIdx.x;
     const int idy = threadIdx.y + blockDim.y * blockIdx.y;
+    if(width <= idx || height <= idy) return;
     int neighbor = 0;
     for(int i = -1;i < 2;i++){
         for(int j = -1;j < 2;j++){
             neighbor += src[(idx + i + width) % width + ((idy + j + height) % height) * width];
         }
     }
-    if(src[idx + width * idy] == 1){
-        dst[idx + width * idy] = neighbor == 3 || neighbor == 4 ? 1 : 0;
+    if(src[idx + width * idy] >= 1){
+        dst[idx + width * idy] = neighbor == 3 || neighbor == 4 ? src[idx + width * idy] + 1 : 0;
     }else{
         dst[idx + width * idy] = neighbor == 3 ? 1 : 0;
     }
