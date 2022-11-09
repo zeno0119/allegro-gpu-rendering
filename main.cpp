@@ -80,14 +80,13 @@ int main(int argc, char **argv) {
                     break;
                 }
                 ifs >> p;
-                map[gx + j + (gy + i) * width] = p - 48;
+                map[gx + j + (gy + i) * width] = p == '1' ? 1 : 0;
             }
         }
     }
-
     {
         auto lock = al_lock_bitmap(m, ALLEGRO_PIXEL_FORMAT_RGBA_8888,
-                                   ALLEGRO_LOCK_READWRITE);
+                                   ALLEGRO_LOCK_WRITEONLY);
         game((unsigned int *)lock->data, 0, map, width, height, lock->pitch);
         al_unlock_bitmap(m);
     }
@@ -117,16 +116,17 @@ int main(int argc, char **argv) {
         }
 
         if (redraw && al_is_event_queue_empty(queue)) {
-            auto start = std::chrono::system_clock::now();
             al_clear_to_color(al_map_rgb(0, 0, 0));
             al_draw_bitmap(m, 0, 0, 0);
-            auto lock = al_lock_bitmap(m, ALLEGRO_PIXEL_FORMAT_RGBA_8888, 0);
+            auto start = std::chrono::system_clock::now();
+            auto lock = al_lock_bitmap(m, ALLEGRO_PIXEL_FORMAT_RGBA_8888,
+                                       ALLEGRO_LOCK_WRITEONLY);
             game((unsigned int *)lock->data, 0, nullptr, width, height,
                  lock->pitch);
             al_unlock_bitmap(m);
             al_flip_display();
-            redraw = false;
             auto end = std::chrono::system_clock::now();
+            redraw = false;
             time += std::chrono::duration_cast<std::chrono::microseconds>(end -
                                                                           start)
                         .count();
