@@ -128,8 +128,10 @@ int main(int argc, char **argv) {
             auto lock = al_lock_bitmap(m, ALLEGRO_PIXEL_FORMAT_RGBA_8888,
                                        ALLEGRO_LOCK_WRITEONLY);
             g.step();
+            std::cout << "step end" << std::endl;
             g.render((unsigned int *)lock->data, lock->pitch);
             al_unlock_bitmap(m);
+            al_draw_bitmap(m, 0, 0, 0);
             al_flip_display();
             auto end = std::chrono::system_clock::now();
             redraw = false;
@@ -137,7 +139,6 @@ int main(int argc, char **argv) {
                                                                           start)
                         .count();
             frame_counter++;
-            al_draw_bitmap(m, 0, 0, 0);
         }
     }
 

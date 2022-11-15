@@ -37,6 +37,7 @@ bool game::step() {
             buf1[i + j * width] = buf2[i + j * width];
         }
     }
+    return true;
 }
 
 bool game::render(unsigned int *p, int pitch) {
@@ -45,23 +46,22 @@ bool game::render(unsigned int *p, int pitch) {
             p[i + j * width] = 0;
             if (buf1[i + j * width] == 0)
                 continue;
-            // float h = buf1[i + j * width] % 360;
-            // unsigned int d = 0;
-            // if (0 <= h && h < 60) {
-            //     d = (255 << 16) + ((unsigned int)(h / 60 * 255) << 8);
-            // } else if (60 <= h && h < 120) {
-            //     d = ((unsigned int)((120 - h) / 60 * 255) << 16) + (255 <<
-            //     8);
-            // } else if (120 <= h && h < 180) {
-            //     d = (255 << 8) + ((unsigned int)((h - 120) / 60 * 255));
-            // } else if (180 <= h && h < 240) {
-            //     d = ((unsigned int)((240 - h) / 60 * 255) << 8) + (255);
-            // } else if (240 <= h && h < 300) {
-            //     d = ((unsigned int)((h - 240) / 60 * 255) << 16) + (255);
-            // } else if (300 <= h && h < 360) {
-            //     d = (255 << 16) + (((unsigned int)(360 - h) / 60 * 255));
-            // }
-            // p[i + j * width] = d << 8;
+            float h = buf1[i + j * width] % 360;
+            unsigned int d = 0;
+            if (0 <= h && h < 60) {
+                d = (255 << 16) + ((unsigned int)(h / 60 * 255) << 8);
+            } else if (60 <= h && h < 120) {
+                d = ((unsigned int)((120 - h) / 60 * 255) << 16) + (255 << 8);
+            } else if (120 <= h && h < 180) {
+                d = (255 << 8) + ((unsigned int)((h - 120) / 60 * 255));
+            } else if (180 <= h && h < 240) {
+                d = ((unsigned int)((240 - h) / 60 * 255) << 8) + (255);
+            } else if (240 <= h && h < 300) {
+                d = ((unsigned int)((h - 240) / 60 * 255) << 16) + (255);
+            } else if (300 <= h && h < 360) {
+                d = (255 << 16) + (((unsigned int)(360 - h) / 60 * 255));
+            }
+            p[i + j * width] = d << 8;
         }
     }
     return true;

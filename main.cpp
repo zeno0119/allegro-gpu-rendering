@@ -116,9 +116,9 @@ int main(int argc, char **argv) {
         }
 
         if (redraw && al_is_event_queue_empty(queue)) {
+            auto start = std::chrono::system_clock::now();
             al_clear_to_color(al_map_rgb(0, 0, 0));
             al_draw_bitmap(m, 0, 0, 0);
-            auto start = std::chrono::system_clock::now();
             auto lock = al_lock_bitmap(m, ALLEGRO_PIXEL_FORMAT_RGBA_8888,
                                        ALLEGRO_LOCK_WRITEONLY);
             game((unsigned int *)lock->data, 0, nullptr, width, height,
